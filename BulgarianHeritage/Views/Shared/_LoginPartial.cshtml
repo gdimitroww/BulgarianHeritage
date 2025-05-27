@@ -1,0 +1,49 @@
+@using Microsoft.AspNetCore.Identity
+@using BulgarianHeritage.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-user me-1"></i>
+            @User.Identity?.Name
+        </a>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                <i class="fas fa-cog me-2"></i>Profile
+            </a></li>
+            <li><a class="dropdown-item" href="#">
+                <i class="fas fa-route me-2"></i>My Itineraries
+            </a></li>
+            <li><a class="dropdown-item" href="#">
+                <i class="fas fa-camera me-2"></i>My Contributions
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form class="dropdown-item p-0" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="btn btn-link text-decoration-none text-dark w-100 text-start">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">
+            <i class="fas fa-user-plus me-1"></i>Register
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">
+            <i class="fas fa-sign-in-alt me-1"></i>Login
+        </a>
+    </li>
+}
+</ul> 

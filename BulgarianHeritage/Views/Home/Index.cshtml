@@ -1,0 +1,217 @@
+﻿@using BulgarianHeritage.Models
+@{
+    ViewData["Title"] = "Discover Bulgarian Heritage";
+    var featuredPOIs = ViewBag.FeaturedPOIs as List<PointOfInterest>;
+    var stats = ViewBag.Stats;
+}
+
+<!-- Hero Section -->
+<section class="hero-section heritage-bg text-white py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center min-vh-50">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">
+                    Discover Bulgaria's Rich Heritage
+                </h1>
+                <p class="lead mb-4">
+                    Explore centuries of history, culture, and tradition through our interactive tourism guide. 
+                    From ancient Thracian tombs to medieval monasteries, experience Bulgaria like never before.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a asp-controller="Home" asp-action="Map" class="btn btn-light btn-lg">
+                        <i class="fas fa-map me-2"></i>Explore Interactive Map
+                    </a>
+                    <a asp-controller="POI" asp-action="Index" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-church me-2"></i>Browse Heritage Sites
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="~/images/hero-bulgaria.jpg" alt="Bulgarian Heritage" class="img-fluid rounded shadow-lg" style="max-height: 400px;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <i class="fas fa-landmark fa-3x text-primary mb-3"></i>
+                        <h3 class="fw-bold">@stats.TotalPOIs</h3>
+                        <p class="text-muted">Heritage Sites</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <i class="fas fa-globe fa-3x text-warning mb-3"></i>
+                        <h3 class="fw-bold">@stats.UNESCOSites</h3>
+                        <p class="text-muted">UNESCO World Heritage Sites</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <i class="fas fa-vr-cardboard fa-3x text-success mb-3"></i>
+                        <h3 class="fw-bold">@stats.VirtualTours</h3>
+                        <p class="text-muted">Virtual Tours Available</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <i class="fas fa-users fa-3x text-info mb-3"></i>
+                        <h3 class="fw-bold">@stats.UserContributions</h3>
+                        <p class="text-muted">User Contributions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Heritage Sites -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="display-5 fw-bold mb-3">Featured Heritage Sites</h2>
+                <p class="lead text-muted">Discover Bulgaria's most iconic cultural and historical landmarks</p>
+            </div>
+        </div>
+        
+        @if (featuredPOIs != null && featuredPOIs.Any())
+        {
+            <div class="row">
+                @foreach (var poi in featuredPOIs)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm border-0 heritage-card">
+                            @if (!string.IsNullOrEmpty(poi.MainImageUrl))
+                            {
+                                <img src="@poi.MainImageUrl" class="card-img-top" alt="@poi.Name" style="height: 250px; object-fit: cover;">
+                            }
+                            else
+                            {
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
+                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                </div>
+                            }
+                            
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title">@poi.Name</h5>
+                                    <div>
+                                        @if (poi.IsUNESCOSite)
+                                        {
+                                            <span class="badge bg-warning text-dark me-1" title="UNESCO World Heritage Site">
+                                                <i class="fas fa-globe"></i>
+                                            </span>
+                                        }
+                                        @if (poi.HasVirtualTour)
+                                        {
+                                            <span class="badge bg-success" title="Virtual Tour Available">
+                                                <i class="fas fa-vr-cardboard"></i>
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                                
+                                <p class="card-text text-muted flex-grow-1">
+                                    @(poi.Description.Length > 120 ? poi.Description.Substring(0, 120) + "..." : poi.Description)
+                                </p>
+                                
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">
+                                        <i class="fas fa-tag me-1"></i>@poi.Category
+                                    </small>
+                                    <a asp-controller="POI" asp-action="Details" asp-route-id="@poi.Id" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye me-1"></i>Explore
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-info-circle fa-3x text-muted mb-3"></i>
+                <h4>No featured sites available yet</h4>
+                <p class="text-muted">Check back soon for amazing Bulgarian heritage sites!</p>
+            </div>
+        }
+        
+        <div class="text-center mt-4">
+            <a asp-controller="POI" asp-action="Index" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-list me-2"></i>View All Heritage Sites
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="fw-bold mb-3">Start Your Heritage Journey Today</h3>
+                <p class="lead mb-0">
+                    Plan your perfect Bulgarian heritage tour with our interactive map and personalized itinerary planner.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a asp-controller="Home" asp-action="Map" class="btn btn-light btn-lg me-2">
+                    <i class="fas fa-map me-2"></i>Interactive Map
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, var(--bulgarian-white) 0%, var(--bulgarian-green) 50%, var(--bulgarian-red) 100%);
+            position: relative;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+        
+        .hero-section .container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .heritage-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .heritage-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        .min-vh-50 {
+            min-height: 50vh;
+        }
+    </style>
+}

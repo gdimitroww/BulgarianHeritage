@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: bulgarian-heritage-db
+    hostname: sqlserver
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: BulgarianHeritage123!
+      MSSQL_PID: Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - heritage-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 10s bash -c '</dev/tcp/localhost/1433' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Bulgarian Heritage Web Application
+  web:
+    build:
+      context: ./BulgarianHeritage
+      dockerfile: Dockerfile
+    container_name: bulgarian-heritage-web
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=BulgarianHeritageDb;User Id=sa;Password=BulgarianHeritage123!;TrustServerCertificate=true;MultipleActiveResultSets=true
+    ports:
+      - "5001:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - heritage-network
+    volumes:
+      - ./BulgarianHeritage/wwwroot/uploads:/app/wwwroot/uploads
+    restart: unless-stopped
+    command: >
+      sh -c "
+        echo 'Waiting for SQL Server to be ready...' &&
+        sleep 30 &&
+        echo 'Starting application...' &&
+        dotnet BulgarianHeritage.dll
+      "
+
+  # Database Migration Service (runs once to set up the database)
+  migration:
+    build:
+      context: ./BulgarianHeritage
+      dockerfile: Dockerfile
+    container_name: bulgarian-heritage-migration
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=BulgarianHeritageDb;User Id=sa;Password=BulgarianHeritage123!;TrustServerCertificate=true;MultipleActiveResultSets=true
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - heritage-network
+    command: >
+      sh -c "
+        echo 'Waiting for SQL Server to be ready...' &&
+        sleep 35 &&
+        echo 'Running database migrations...' &&
+        dotnet ef database update --no-build
+      "
+    profiles:
+      - setup
+
+volumes:
+  sqlserver_data:
+    driver: local
+
+networks:
+  heritage-network:
+    driver: bridge 

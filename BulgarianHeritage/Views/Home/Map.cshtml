@@ -1,0 +1,301 @@
+@using BulgarianHeritage.Models
+@{
+    ViewData["Title"] = "Interactive Heritage Map";
+    var categories = ViewBag.Categories as POICategory[];
+}
+
+<div class="container-fluid px-0">
+    <!-- Map Controls -->
+    <div class="bg-light border-bottom p-3">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2 class="mb-0">
+                        <i class="fas fa-map me-2 text-primary"></i>
+                        Interactive Heritage Map
+                    </h2>
+                    <p class="text-muted mb-0">Explore Bulgaria's cultural treasures</p>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex gap-2 flex-wrap justify-content-md-end">
+                        <select id="categoryFilter" class="form-select" style="width: auto;">
+                            <option value="">All Categories</option>
+                            @if (categories != null)
+                            {
+                                @foreach (var category in categories)
+                                {
+                                    <option value="@((int)category)">@category</option>
+                                }
+                            }
+                        </select>
+                        <button id="resetView" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-1"></i>Reset View
+                        </button>
+                        <button id="toggleSatellite" class="btn btn-outline-primary">
+                            <i class="fas fa-satellite me-1"></i>Satellite
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Container -->
+    <div id="heritage-map" style="height: 70vh; width: 100%;"></div>
+
+    <!-- Map Legend -->
+    <div class="bg-light border-top p-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h6 class="mb-2">
+                        <i class="fas fa-info-circle me-2"></i>Map Legend
+                    </h6>
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-warning rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                            <small>UNESCO World Heritage Sites</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                            <small>Virtual Tours Available</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                            <small>Regular Heritage Sites</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- POI Details Modal -->
+<div class="modal fade" id="poiModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="poiModalTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="poiModalBody">
+                <!-- POI details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a id="poiDetailsLink" href="#" class="btn btn-primary">
+                    <i class="fas fa-eye me-1"></i>View Full Details
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let map;
+        let markersLayer;
+        let currentMarkers = [];
+        
+        // Initialize map
+        function initMap() {
+            // Center on Bulgaria
+            map = L.map('heritage-map').setView([42.7339, 25.4858], 7);
+            
+            // Add tile layers
+            const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            });
+            
+            const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles © Esri'
+            });
+            
+            // Add default layer
+            osmLayer.addTo(map);
+            
+            // Create markers layer group
+            markersLayer = L.layerGroup().addTo(map);
+            
+            // Toggle satellite view
+            let isSatellite = false;
+            document.getElementById('toggleSatellite').addEventListener('click', function() {
+                if (isSatellite) {
+                    map.removeLayer(satelliteLayer);
+                    osmLayer.addTo(map);
+                    this.innerHTML = '<i class="fas fa-satellite me-1"></i>Satellite';
+                } else {
+                    map.removeLayer(osmLayer);
+                    satelliteLayer.addTo(map);
+                    this.innerHTML = '<i class="fas fa-map me-1"></i>Street Map';
+                }
+                isSatellite = !isSatellite;
+            });
+            
+            // Reset view button
+            document.getElementById('resetView').addEventListener('click', function() {
+                map.setView([42.7339, 25.4858], 7);
+            });
+            
+            // Load POI data
+            loadPOIData();
+        }
+        
+        // Load POI data from API
+        function loadPOIData(category = null) {
+            const url = category ? `/POI/GetMapData?category=${category}` : '/POI/GetMapData';
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    displayPOIMarkers(data);
+                })
+                .catch(error => {
+                    console.error('Error loading POI data:', error);
+                });
+        }
+        
+        // Display POI markers on map
+        function displayPOIMarkers(pois) {
+            // Clear existing markers
+            markersLayer.clearLayers();
+            currentMarkers = [];
+            
+            pois.forEach(poi => {
+                // Determine marker color based on POI properties
+                let markerColor = 'blue';
+                if (poi.isUNESCOSite) {
+                    markerColor = 'orange';
+                } else if (poi.hasVirtualTour) {
+                    markerColor = 'green';
+                }
+                
+                // Create custom icon
+                const icon = L.divIcon({
+                    className: 'custom-marker',
+                    html: `<div class="marker-pin" style="background-color: ${markerColor};">
+                             <i class="fas fa-landmark text-white"></i>
+                           </div>`,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 30]
+                });
+                
+                // Create marker
+                const marker = L.marker([poi.latitude, poi.longitude], { icon: icon })
+                    .bindPopup(createPopupContent(poi))
+                    .on('click', function() {
+                        showPOIModal(poi);
+                    });
+                
+                markersLayer.addLayer(marker);
+                currentMarkers.push(marker);
+            });
+        }
+        
+        // Create popup content for markers
+        function createPopupContent(poi) {
+            const badges = [];
+            if (poi.isUNESCOSite) {
+                badges.push('<span class="badge bg-warning text-dark me-1"><i class="fas fa-globe"></i> UNESCO</span>');
+            }
+            if (poi.hasVirtualTour) {
+                badges.push('<span class="badge bg-success"><i class="fas fa-vr-cardboard"></i> VR Tour</span>');
+            }
+            
+            return `
+                <div class="poi-popup">
+                    <h6 class="mb-2">${poi.name}</h6>
+                    <p class="text-muted small mb-2">${poi.category}</p>
+                    ${badges.length > 0 ? '<div class="mb-2">' + badges.join('') + '</div>' : ''}
+                    <button class="btn btn-primary btn-sm" onclick="showPOIModal(${JSON.stringify(poi).replace(/"/g, '&quot;')})">
+                        <i class="fas fa-eye me-1"></i>View Details
+                    </button>
+                </div>
+            `;
+        }
+        
+        // Show POI details in modal
+        function showPOIModal(poi) {
+            document.getElementById('poiModalTitle').textContent = poi.name;
+            document.getElementById('poiDetailsLink').href = `/POI/Details/${poi.id}`;
+            
+            const modalBody = document.getElementById('poiModalBody');
+            modalBody.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        ${poi.mainImageUrl ? 
+                            `<img src="${poi.mainImageUrl}" class="img-fluid rounded mb-3" alt="${poi.name}">` :
+                            '<div class="bg-light rounded d-flex align-items-center justify-content-center mb-3" style="height: 200px;"><i class="fas fa-image fa-3x text-muted"></i></div>'
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Category</h6>
+                        <p class="text-muted">${poi.category}</p>
+                        
+                        <h6>Location</h6>
+                        <p class="text-muted">Lat: ${poi.latitude.toFixed(6)}, Lng: ${poi.longitude.toFixed(6)}</p>
+                        
+                        <div class="mt-3">
+                            ${poi.isUNESCOSite ? '<span class="badge bg-warning text-dark me-2"><i class="fas fa-globe"></i> UNESCO World Heritage Site</span>' : ''}
+                            ${poi.hasVirtualTour ? '<span class="badge bg-success"><i class="fas fa-vr-cardboard"></i> Virtual Tour Available</span>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const modal = new bootstrap.Modal(document.getElementById('poiModal'));
+            modal.show();
+        }
+        
+        // Category filter change handler
+        document.getElementById('categoryFilter').addEventListener('change', function() {
+            const selectedCategory = this.value;
+            loadPOIData(selectedCategory || null);
+        });
+        
+        // Initialize map when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+        });
+    </script>
+    
+    <style>
+        .custom-marker {
+            background: transparent;
+            border: none;
+        }
+        
+        .marker-pin {
+            width: 30px;
+            height: 30px;
+            border-radius: 50% 50% 50% 0;
+            background: #c30b82;
+            position: absolute;
+            transform: rotate(-45deg);
+            left: 50%;
+            top: 50%;
+            margin: -15px 0 0 -15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .marker-pin i {
+            transform: rotate(45deg);
+            font-size: 14px;
+        }
+        
+        .poi-popup {
+            min-width: 200px;
+        }
+        
+        .leaflet-popup-content {
+            margin: 8px 12px;
+        }
+        
+        #heritage-map {
+            border: 1px solid #dee2e6;
+        }
+    </style>
+} 

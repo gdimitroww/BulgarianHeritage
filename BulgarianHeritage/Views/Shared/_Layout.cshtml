@@ -1,0 +1,180 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Bulgarian Heritage Tourism Guide</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <!-- Leaflet CSS for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BulgarianHeritage.styles.css" asp-append-version="true" />
+    
+    <!-- Bulgarian cultural colors and fonts -->
+    <style>
+        :root {
+            --bulgarian-white: #FFFFFF;
+            --bulgarian-green: #00966E;
+            --bulgarian-red: #D62612;
+            --heritage-gold: #FFD700;
+            --heritage-brown: #8B4513;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--bulgarian-green) !important;
+        }
+        
+        .heritage-bg {
+            background: linear-gradient(135deg, var(--bulgarian-white) 0%, var(--bulgarian-green) 50%, var(--bulgarian-red) 100%);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-landmark me-2"></i>
+                    Bulgarian Heritage
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i>Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Map">
+                                <i class="fas fa-map me-1"></i>Interactive Map
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="POI" asp-action="Index">
+                                <i class="fas fa-church me-1"></i>Heritage Sites
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-list me-1"></i>Categories
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="POI" asp-action="Index" asp-route-category="Church">
+                                    <i class="fas fa-church me-2"></i>Churches
+                                </a></li>
+                                <li><a class="dropdown-item" asp-controller="POI" asp-action="Index" asp-route-category="Monastery">
+                                    <i class="fas fa-place-of-worship me-2"></i>Monasteries
+                                </a></li>
+                                <li><a class="dropdown-item" asp-controller="POI" asp-action="Index" asp-route-category="Fortress">
+                                    <i class="fas fa-fort-awesome me-2"></i>Fortresses
+                                </a></li>
+                                <li><a class="dropdown-item" asp-controller="POI" asp-action="Index" asp-route-category="Museum">
+                                    <i class="fas fa-university me-2"></i>Museums
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-controller="POI" asp-action="Index">
+                                    <i class="fas fa-eye me-2"></i>View All
+                                </a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="About">
+                                <i class="fas fa-info-circle me-1"></i>About
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Language switcher -->
+                    <div class="navbar-nav me-3">
+                        <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-globe me-1"></i>Language
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="setLanguage('bg-BG')">🇧🇬 Български</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="setLanguage('en-US')">🇺🇸 English</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- User authentication -->
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="bg-dark text-light mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="fas fa-landmark me-2"></i>Bulgarian Heritage</h5>
+                    <p class="text-muted">Discover the rich cultural heritage of Bulgaria through our interactive tourism guide.</p>
+                </div>
+                <div class="col-md-4">
+                    <h6>Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light text-decoration-none">UNESCO Sites</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Virtual Tours</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Travel Planning</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6>Contact</h6>
+                    <p class="text-muted mb-1"><i class="fas fa-envelope me-2"></i>info@bulgarianheritage.bg</p>
+                    <p class="text-muted"><i class="fas fa-phone me-2"></i>+359 2 XXX XXXX</p>
+                </div>
+            </div>
+            <hr class="my-3">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2025 Bulgarian Heritage Tourism Guide. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a asp-controller="Home" asp-action="Privacy" class="text-light text-decoration-none me-3">Privacy Policy</a>
+                    <a href="#" class="text-light text-decoration-none">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Leaflet JS for maps -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <!-- Language switching functionality -->
+    <script>
+        function setLanguage(culture) {
+            const url = new URL(window.location);
+            url.searchParams.set('culture', culture);
+            window.location.href = url.toString();
+        }
+    </script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
