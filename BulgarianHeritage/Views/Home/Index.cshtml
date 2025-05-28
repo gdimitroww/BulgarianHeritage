@@ -5,29 +5,83 @@
     var stats = ViewBag.Stats;
 }
 
+<!-- Ethereal Shadows Background -->
+<div class="ethereal-shadows-background">
+    <div class="shadow-overlay">
+        <svg class="filter-svg">
+            <defs>
+                <filter id="ethereal-filter">
+                    <feTurbulence
+                        id="turbulence"
+                        result="undulation"
+                        numOctaves="2"
+                        baseFrequency="0.0003,0.003"
+                        seed="0"
+                        type="turbulence"
+                    />
+                    <feColorMatrix
+                        id="hue-rotate"
+                        in="undulation"
+                        type="hueRotate"
+                        values="180"
+                    />
+                    <feColorMatrix
+                        in="dist"
+                        result="circulation"
+                        type="matrix"
+                        values="4 0 0 0 1  4 0 0 0 1  4 0 0 0 1  1 0 0 0 0"
+                    />
+                    <feDisplacementMap
+                        in="SourceGraphic"
+                        in2="circulation"
+                        scale="80"
+                        result="dist"
+                    />
+                    <feDisplacementMap
+                        in="dist"
+                        in2="undulation"
+                        scale="80"
+                        result="output"
+                    />
+                </filter>
+            </defs>
+        </svg>
+        <div class="shadow-mask"></div>
+    </div>
+    <div class="noise-overlay"></div>
+</div>
+
 <!-- Hero Section -->
-<section class="hero-section heritage-bg text-white py-5 mb-5">
+<section class="hero-section text-white py-5 mb-5">
     <div class="container">
         <div class="row align-items-center min-vh-50">
             <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-4">
-                    Discover Bulgaria's Rich Heritage
-                </h1>
-                <p class="lead mb-4">
-                    Explore centuries of history, culture, and tradition through our interactive tourism guide. 
-                    From ancient Thracian tombs to medieval monasteries, experience Bulgaria like never before.
-                </p>
-                <div class="d-flex gap-3 flex-wrap">
-                    <a asp-controller="Home" asp-action="Map" class="btn btn-light btn-lg">
-                        <i class="fas fa-map me-2"></i>Explore Interactive Map
-                    </a>
-                    <a asp-controller="POI" asp-action="Index" class="btn btn-outline-light btn-lg">
-                        <i class="fas fa-church me-2"></i>Browse Heritage Sites
-                    </a>
+                <div class="content-overlay">
+                    <h1 class="display-4 fw-bold mb-4 ethereal-title">
+                        Discover Bulgaria's Rich Heritage
+                    </h1>
+                    <p class="lead mb-4">
+                        Explore centuries of history, culture, and tradition through our interactive tourism guide. 
+                        From ancient Thracian tombs to medieval monasteries, experience Bulgaria like never before.
+                    </p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a asp-controller="Home" asp-action="Map" class="btn btn-light btn-lg">
+                            <i class="fas fa-map me-2"></i>Explore Interactive Map
+                        </a>
+                        <a asp-controller="POI" asp-action="Index" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-church me-2"></i>Browse Heritage Sites
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-6 text-center">
-                <img src="~/images/hero-bulgaria.jpg" alt="Bulgarian Heritage" class="img-fluid rounded shadow-lg" style="max-height: 400px;">
+                <div class="heritage-card-overlay">
+                    <div class="heritage-content">
+                        <i class="fas fa-mountain fa-3x text-white mb-3"></i>
+                        <h4 class="text-white">Bulgarian Heritage</h4>
+                        <p class="text-light">Discover Our Cultural Treasures</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -180,25 +234,103 @@
 
 @section Scripts {
     <style>
+        /* Ethereal Shadows Background */
+        .ethereal-shadows-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            z-index: -1;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #1e3c72 75%, #2a5298 100%);
+        }
+        
+        .shadow-overlay {
+            position: absolute;
+            inset: -80px;
+            filter: url(#ethereal-filter) blur(4px);
+        }
+        
+        .filter-svg {
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+        
+        .shadow-mask {
+            background-color: rgba(100, 100, 150, 0.8);
+            mask-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDUwMCA1MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjUwIDUwMEM0MDEuNzggNTAwIDUwMCA0MDEuNzggNTAwIDI1MEM1MDAgOTguMjIgNDAxLjc4IDAgMjUwIDBDOTguMjIgMCAwIDk4LjIyIDAgMjUwQzAgNDAxLjc4IDk4LjIyIDUwMCAyNTAgNTAwWk0yNTAgNDUwQzM3My44IDQ1MCA0NTAgMzczLjggNDUwIDI1MEM0NTAgMTI2LjIgMzczLjggNTAgMjUwIDUwQzEyNi4yIDUwIDUwIDEyNi4yIDUwIDI1MEM1MCAzNzMuOCAxMjYuMiA0NTAgMjUwIDQ1MFoiIGZpbGw9ImJsYWNrIi8+Cjwvc3ZnPgo=');
+            mask-size: cover;
+            mask-repeat: no-repeat;
+            mask-position: center;
+            width: 100%;
+            height: 100%;
+            opacity: 0.9;
+        }
+        
+        .noise-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 1px, transparent 1px),
+                radial-gradient(circle at 60% 70%, rgba(255,255,255,0.05) 1px, transparent 1px),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 1px, transparent 1px),
+                radial-gradient(circle at 40% 80%, rgba(255,255,255,0.06) 1px, transparent 1px);
+            background-size: 240px 240px, 180px 180px, 200px 200px, 160px 160px;
+            background-repeat: repeat;
+            opacity: 0.5;
+            animation: noiseFloat 20s infinite linear;
+        }
+        
+        /* Make page content have transparent background */
+        body {
+            background: transparent !important;
+        }
+        
         .hero-section {
-            background: linear-gradient(135deg, var(--bulgarian-white) 0%, var(--bulgarian-green) 50%, var(--bulgarian-red) 100%);
+            background: transparent;
             position: relative;
+            min-height: 70vh;
         }
         
         .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 1;
+            display: none;
         }
         
         .hero-section .container {
             position: relative;
-            z-index: 2;
+            z-index: 5;
+        }
+        
+        .content-overlay {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .heritage-card-overlay {
+            background: rgba(100, 100, 150, 0.4);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .ethereal-title {
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5), 0 0 60px rgba(100, 100, 255, 0.3);
+            animation: etherealGlow 4s ease-in-out infinite alternate;
+        }
+        
+        .heritage-content {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
         }
         
         .heritage-card {
@@ -207,11 +339,67 @@
         
         .heritage-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
         }
         
         .min-vh-50 {
             min-height: 50vh;
         }
+        
+        /* Animations */
+        @@keyframes noiseFloat {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(-10px, -10px); }
+            50% { transform: translate(10px, -5px); }
+            75% { transform: translate(-5px, 10px); }
+            100% { transform: translate(0, 0); }
+        }
+        
+        @@keyframes etherealGlow {
+            0% { 
+                text-shadow: 0 0 30px rgba(255, 255, 255, 0.5), 0 0 60px rgba(100, 100, 255, 0.3);
+            }
+            100% { 
+                text-shadow: 0 0 40px rgba(255, 255, 255, 0.8), 0 0 80px rgba(150, 150, 255, 0.5);
+            }
+        }
+        
+        :root {
+            --bulgarian-white: #ffffff;
+            --bulgarian-green: #00966e;
+            --bulgarian-red: #d62612;
+        }
     </style>
+    
+    <script>
+        // Ethereal Shadows Animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const hueRotateElement = document.getElementById('hue-rotate');
+            const turbulenceElement = document.getElementById('turbulence');
+            
+            if (hueRotateElement && turbulenceElement) {
+                let hueValue = 0;
+                let turbulenceX = 0.0003;
+                let turbulenceY = 0.003;
+                
+                function animateEtherealEffect() {
+                    // Animate hue rotation
+                    hueValue += 1;
+                    if (hueValue >= 360) hueValue = 0;
+                    hueRotateElement.setAttribute('values', hueValue.toString());
+                    
+                    // Animate turbulence frequency
+                    const time = Date.now() * 0.001;
+                    const newTurbulenceX = 0.0003 + Math.sin(time * 0.5) * 0.0001;
+                    const newTurbulenceY = 0.003 + Math.cos(time * 0.3) * 0.001;
+                    
+                    turbulenceElement.setAttribute('baseFrequency', `${newTurbulenceX},${newTurbulenceY}`);
+                    
+                    requestAnimationFrame(animateEtherealEffect);
+                }
+                
+                animateEtherealEffect();
+            }
+        });
+    </script>
 }
