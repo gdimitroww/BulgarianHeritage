@@ -3,6 +3,24 @@
     ViewData["Title"] = "Discover Bulgarian Heritage";
     var featuredPOIs = ViewBag.FeaturedPOIs as List<PointOfInterest>;
     var stats = ViewBag.Stats;
+    
+    string GetCategoryIcon(POICategory category)
+    {
+        return category switch
+        {
+            POICategory.Church => "fa-church",
+            POICategory.Monastery => "fa-place-of-worship",
+            POICategory.Fortress => "fa-chess-rook",
+            POICategory.Archaeological => "fa-landmark",
+            POICategory.Nature => "fa-tree",
+            POICategory.HistoricalTown => "fa-city",
+            POICategory.Monument => "fa-monument",
+            POICategory.Architecture => "fa-building-columns",
+            POICategory.Museum => "fa-building",
+            POICategory.Cultural => "fa-masks-theater",
+            _ => "fa-map-marker-alt"
+        };
+    }
 }
 
 <!-- Ethereal Shadows Background -->
@@ -147,15 +165,35 @@
                 @foreach (var poi in featuredPOIs)
                 {
                     <div class="col-lg-4 col-md-6 mb-4">
-                        <div class="card h-100 shadow-sm border-0 heritage-card">
+                        <div class="card h-100 shadow-sm border-0 heritage-card" data-category="@poi.Category">
                             @if (!string.IsNullOrEmpty(poi.MainImageUrl))
                             {
-                                <img src="@poi.MainImageUrl" class="card-img-top" alt="@poi.Name" style="height: 250px; object-fit: cover;">
+                                <img src="@poi.MainImageUrl" class="card-img-top heritage-image" alt="@poi.Name" style="height: 250px; object-fit: cover;" 
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="heritage-image-placeholder" style="display: none; height: 250px;" data-category="@poi.Category">
+                                    <div class="heritage-placeholder-content">
+                                        <i class="fas @(GetCategoryIcon(poi.Category)) fa-3x mb-3"></i>
+                                        <h6 class="text-white mb-2">@poi.Name</h6>
+                                        <span class="badge bg-secondary">@poi.Category</span>
+                                        @if (poi.IsUNESCOSite)
+                                        {
+                                            <span class="badge bg-warning text-dark ms-1">UNESCO</span>
+                                        }
+                                    </div>
+                                </div>
                             }
                             else
                             {
-                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
-                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                <div class="heritage-image-placeholder" style="height: 250px;" data-category="@poi.Category">
+                                    <div class="heritage-placeholder-content">
+                                        <i class="fas @(GetCategoryIcon(poi.Category)) fa-3x mb-3"></i>
+                                        <h6 class="text-white mb-2">@poi.Name</h6>
+                                        <span class="badge bg-secondary">@poi.Category</span>
+                                        @if (poi.IsUNESCOSite)
+                                        {
+                                            <span class="badge bg-warning text-dark ms-1">UNESCO</span>
+                                        }
+                                    </div>
                                 </div>
                             }
                             
@@ -234,7 +272,7 @@
 
 @section Scripts {
     <style>
-        /* Ethereal Shadows Background */
+        /* Ethereal Shadows Background - Black & White Theme */
         .ethereal-shadows-background {
             position: fixed;
             top: 0;
@@ -243,7 +281,7 @@
             height: 100vh;
             overflow: hidden;
             z-index: -1;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #1e3c72 75%, #2a5298 100%);
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2d2d2d 50%, #404040 75%, #666666 100%);
         }
         
         .shadow-overlay {
@@ -259,27 +297,29 @@
         }
         
         .shadow-mask {
-            background-color: rgba(100, 100, 150, 0.8);
+            background-color: rgba(20, 20, 20, 0.9);
             mask-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDUwMCA1MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjUwIDUwMEM0MDEuNzggNTAwIDUwMCA0MDEuNzggNTAwIDI1MEM1MDAgOTguMjIgNDAxLjc4IDAgMjUwIDBDOTguMjIgMCAwIDk4LjIyIDAgMjUwQzAgNDAxLjc4IDk4LjIyIDUwMCAyNTAgNTAwWk0yNTAgNDUwQzM3My44IDQ1MCA0NTAgMzczLjggNDUwIDI1MEM0NTAgMTI2LjIgMzczLjggNTAgMjUwIDUwQzEyNi4yIDUwIDUwIDEyNi4yIDUwIDI1MEM1MCAzNzMuOCAxMjYuMiA0NTAgMjUwIDQ1MFoiIGZpbGw9ImJsYWNrIi8+Cjwvc3ZnPgo=');
             mask-size: cover;
             mask-repeat: no-repeat;
             mask-position: center;
             width: 100%;
             height: 100%;
-            opacity: 0.9;
+            opacity: 0.8;
         }
         
         .noise-overlay {
             position: absolute;
             inset: 0;
             background-image: 
-                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 1px, transparent 1px),
-                radial-gradient(circle at 60% 70%, rgba(255,255,255,0.05) 1px, transparent 1px),
-                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 1px, transparent 1px),
-                radial-gradient(circle at 40% 80%, rgba(255,255,255,0.06) 1px, transparent 1px);
-            background-size: 240px 240px, 180px 180px, 200px 200px, 160px 160px;
+                radial-gradient(circle at 20% 30%, rgba(0,0,0,0.3) 1px, transparent 1px),
+                radial-gradient(circle at 60% 70%, rgba(0,0,0,0.2) 1px, transparent 1px),
+                radial-gradient(circle at 80% 20%, rgba(0,0,0,0.25) 1px, transparent 1px),
+                radial-gradient(circle at 40% 80%, rgba(0,0,0,0.15) 1px, transparent 1px),
+                radial-gradient(circle at 10% 60%, rgba(255,255,255,0.05) 1px, transparent 1px),
+                radial-gradient(circle at 90% 40%, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 240px 240px, 180px 180px, 200px 200px, 160px 160px, 220px 220px, 190px 190px;
             background-repeat: repeat;
-            opacity: 0.5;
+            opacity: 0.6;
             animation: noiseFloat 20s infinite linear;
         }
         
@@ -304,25 +344,25 @@
         }
         
         .content-overlay {
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.8);
             padding: 2rem;
             border-radius: 20px;
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
         
         .heritage-card-overlay {
-            background: rgba(100, 100, 150, 0.4);
+            background: rgba(40, 40, 40, 0.7);
             padding: 3rem 2rem;
             border-radius: 20px;
             backdrop-filter: blur(10px);
             border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
         }
         
         .ethereal-title {
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5), 0 0 60px rgba(100, 100, 255, 0.3);
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 60px rgba(255, 255, 255, 0.4);
             animation: etherealGlow 4s ease-in-out infinite alternate;
         }
         
@@ -330,16 +370,105 @@
             text-align: center;
             z-index: 10;
             position: relative;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
         }
         
         .heritage-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: rgba(20, 20, 20, 0.8) !important;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
         
         .heritage-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        }
+        
+        .heritage-card .card-body {
+            background: transparent;
+            color: #ffffff;
+        }
+        
+        .heritage-card .card-title {
+            color: #ffffff;
+            font-weight: 600;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+        
+        .heritage-card .card-text {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .heritage-card .text-muted {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+        
+        .heritage-card .card-img-top {
+            border-radius: 15px 15px 0 0;
+            filter: brightness(0.9) contrast(1.1);
+        }
+        
+        .heritage-card .bg-light {
+            background: rgba(40, 40, 40, 0.8) !important;
+            border-radius: 15px 15px 0 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .heritage-card .bg-light i {
+            color: rgba(255, 255, 255, 0.4) !important;
+        }
+        
+        /* Ethereal sections styling */
+        section:not(.hero-section) {
+            background: transparent;
+            position: relative;
+        }
+        
+        section:not(.hero-section):not(.bg-primary):not(.bg-light) {
+            color: #ffffff;
+        }
+        
+        section h2, section h3, section h4 {
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+        
+        section .lead {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        /* Override specific text-muted in section headers */
+        section .text-muted {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        
+        /* Statistics section styling */
+        .bg-light {
+            background: rgba(30, 30, 30, 0.8) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .bg-light .card {
+            background: rgba(20, 20, 20, 0.9) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #ffffff;
+        }
+        
+        .bg-light .card h3 {
+            color: #ffffff;
+        }
+        
+        .bg-light .card .text-muted {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        
+        /* Call to action section */
+        .bg-primary {
+            background: rgba(0, 60, 120, 0.8) !important;
+            backdrop-filter: blur(10px);
         }
         
         .min-vh-50 {
@@ -357,11 +486,105 @@
         
         @@keyframes etherealGlow {
             0% { 
-                text-shadow: 0 0 30px rgba(255, 255, 255, 0.5), 0 0 60px rgba(100, 100, 255, 0.3);
+                text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 60px rgba(255, 255, 255, 0.4);
             }
             100% { 
-                text-shadow: 0 0 40px rgba(255, 255, 255, 0.8), 0 0 80px rgba(150, 150, 255, 0.5);
+                text-shadow: 0 0 40px rgba(255, 255, 255, 1), 0 0 80px rgba(255, 255, 255, 0.6);
             }
+        }
+        
+        /* Heritage Image Placeholders */
+        .heritage-image-placeholder {
+            background: linear-gradient(135deg, rgba(40, 40, 40, 0.9), rgba(60, 60, 60, 0.8));
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .heritage-image-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(255, 255, 255, 0.05) 25%, 
+                transparent 25%, 
+                transparent 75%, 
+                rgba(255, 255, 255, 0.05) 75%),
+                linear-gradient(45deg, 
+                rgba(255, 255, 255, 0.05) 25%, 
+                transparent 25%, 
+                transparent 75%, 
+                rgba(255, 255, 255, 0.05) 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            opacity: 0.3;
+        }
+        
+        .heritage-placeholder-content {
+            text-align: center;
+            z-index: 2;
+            position: relative;
+            padding: 1rem;
+        }
+        
+        .heritage-placeholder-content i {
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+            margin-bottom: 1rem;
+        }
+        
+        .heritage-placeholder-content h6 {
+            font-weight: 600;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Category-specific backgrounds */
+        .heritage-card[data-category="Church"] .heritage-image-placeholder {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.8), rgba(160, 82, 45, 0.7));
+        }
+        
+        .heritage-card[data-category="Monastery"] .heritage-image-placeholder {
+            background: linear-gradient(135deg, rgba(72, 61, 139, 0.8), rgba(106, 90, 205, 0.7));
+        }
+        
+        .heritage-card[data-category="Fortress"] .heritage-image-placeholder {
+            background: linear-gradient(135deg, rgba(105, 105, 105, 0.8), rgba(128, 128, 128, 0.7));
+        }
+        
+        .heritage-card[data-category="Archaeological"] .heritage-image-placeholder {
+            background: linear-gradient(135deg, rgba(184, 134, 11, 0.8), rgba(202, 138, 4, 0.7));
+        }
+        
+        .heritage-card[data-category="Nature"] .heritage-image-placeholder {
+            background: linear-gradient(135deg, rgba(34, 139, 34, 0.8), rgba(46, 125, 50, 0.7));
+        }
+        
+        .heritage-card[data-category="HistoricalTown"] .heritage-image-placeholder {
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.8), rgba(199, 21, 133, 0.7));
+        }
+        
+        .heritage-card[data-category="Monument"] .heritage-image-placeholder {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.8), rgba(160, 82, 45, 0.7));
+        }
+        
+        .heritage-card[data-category="Architecture"] .heritage-image-placeholder {
+            background: linear-gradient(135deg, rgba(70, 130, 180, 0.8), rgba(100, 149, 237, 0.7));
+        }
+        
+        .heritage-card[data-category="Museum"] .heritage-image-placeholder {
+            background: linear-gradient(135deg, rgba(147, 112, 219, 0.8), rgba(138, 43, 226, 0.7));
+        }
+        
+        .heritage-card[data-category="Cultural"] .heritage-image-placeholder {
+            background: linear-gradient(135deg, rgba(255, 99, 71, 0.8), rgba(255, 69, 0, 0.7));
         }
         
         :root {
