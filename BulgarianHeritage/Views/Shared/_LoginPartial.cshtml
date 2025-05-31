@@ -13,7 +13,7 @@
             @User.Identity?.Name
         </a>
         <ul class="dropdown-menu">
-            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+            <li><a class="dropdown-item" href="#">
                 <i class="fas fa-cog me-2"></i>Profile
             </a></li>
             <li><a class="dropdown-item" href="#">
@@ -24,7 +24,7 @@
             </a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
-                <form class="dropdown-item p-0" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <form class="dropdown-item p-0" asp-area="Identity" asp-page="/Account/Logout">
                     <button type="submit" class="btn btn-link text-decoration-none text-dark w-100 text-start">
                         <i class="fas fa-sign-out-alt me-2"></i>Logout
                     </button>

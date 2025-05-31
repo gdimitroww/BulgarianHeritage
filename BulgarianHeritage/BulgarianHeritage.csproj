@@ -15,7 +15,6 @@
     
     <!-- ASP.NET Core Identity for authentication -->
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.0" />
     
     <!-- Localization support -->
     <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.0" />
