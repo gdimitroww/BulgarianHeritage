@@ -22,16 +22,24 @@
 /* Force the ethereal background with maximum specificity */
 html, body {
     background: linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2d2d2d 50%, #404040 75%, #666666 100%) !important;
-    min-height: 100vh !important;
+    height: 100vh !important;
     margin: 0 !important;
     padding: 0 !important;
     overflow-x: hidden !important;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
     line-height: 1.6 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 .container {
     background: transparent !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 100vh !important;
+    padding: 20px !important;
 }
 
 /* Cool floating particles */
@@ -90,6 +98,535 @@ html, body {
 .cool-input:focus {
     transform: translateY(-2px) !important;
     box-shadow: 0 8px 30px rgba(13, 110, 253, 0.4), 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(13, 110, 253, 0.8) !important;
+}
+
+/* Fix autofill white background */
+.cool-input:-webkit-autofill,
+.cool-input:-webkit-autofill:hover,
+.cool-input:-webkit-autofill:focus,
+.cool-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgba(40, 40, 40, 0.9) inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background-color: rgba(40, 40, 40, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* Fix autocomplete dropdown */
+.cool-input::-webkit-list-button {
+    background: rgba(40, 40, 40, 0.9) !important;
+    color: #ffffff !important;
+}
+
+/* Enhanced form input styling - AGGRESSIVE FIX */
+.form-control,
+.cool-input,
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    backdrop-filter: blur(10px) !important;
+    transition: all 0.3s ease !important;
+}
+
+.form-control:focus,
+.cool-input:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(13, 110, 253, 0.8) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    transform: translateY(-2px) !important;
+}
+
+.form-control::placeholder,
+.cool-input::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+input[type="text"]::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* NUCLEAR OPTION - Fix autofill completely */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus,
+.form-control:-webkit-autofill:active,
+.cool-input:-webkit-autofill,
+.cool-input:-webkit-autofill:hover,
+.cool-input:-webkit-autofill:focus,
+.cool-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px rgba(30, 30, 30, 0.95) inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background-color: rgba(30, 30, 30, 0.95) !important;
+    background-image: none !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* EXTREME BROWSER KILLER - Eliminate ALL possible white areas */
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-strong-password-auto-fill-button {
+    visibility: hidden !important;
+    display: none !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+}
+
+/* Kill ALL browser dropdown elements */
+input::-webkit-list-button,
+input::-webkit-calendar-picker-indicator,
+input::-webkit-clear-button,
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button,
+select::-webkit-scrollbar {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* Hide ALL browser suggestion elements */
+input[type="email"]::-webkit-list-button,
+input[type="text"]::-webkit-list-button,
+input[type="password"]::-webkit-list-button,
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* ULTIMATE FIX - Completely disable autofill dropdown and white overlays */
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-strong-password-auto-fill-button,
+input::-webkit-search-decoration,
+input::-webkit-search-cancel-button,
+input::-webkit-search-results-button,
+input::-webkit-search-results-decoration,
+input::-webkit-calendar-picker-indicator,
+input::-webkit-clear-button,
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button,
+input::-webkit-list-button,
+input::-ms-clear,
+input::-ms-reveal {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+}
+
+/* Kill all datalist and autocomplete dropdowns */
+datalist,
+datalist option {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    background: transparent !important;
+}
+
+/* DISABLE ALL browser appearances and autocomplete completely */
+input, 
+.form-control,
+.cool-input,
+select,
+textarea,
+button {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    -webkit-user-modify: read-write !important;
+    autocomplete: off !important;
+}
+
+/* Disable autocomplete specifically on email and password fields */
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+    autocomplete: off !important;
+    -webkit-autocomplete: off !important;
+}
+
+/* Kill browser suggestion containers completely */
+input::-webkit-textfield-decoration-container,
+input::-webkit-validation-bubble,
+input::-webkit-validation-bubble-message,
+input::-webkit-validation-bubble-arrow,
+input::-webkit-validation-bubble-top-outer-arrow,
+input::-webkit-validation-bubble-top-inner-arrow {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* ULTRA AGGRESSIVE - Hide any possible overlay elements */
+*[data-webkit-autofill],
+*:-webkit-autofill-and-obscured,
+*:-webkit-autofill-strong-password,
+*:-webkit-autofill-strong-password-viewable {
+    background: rgba(30, 30, 30, 0.95) !important;
+    -webkit-box-shadow: 0 0 0 1000px rgba(30, 30, 30, 0.95) inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    color: #ffffff !important;
+}
+
+/* Prevent any white background from showing during autofill */
+input:-internal-autofill-selected {
+    background-color: rgba(30, 30, 30, 0.95) !important;
+    background-image: none !important;
+    color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0 1000px rgba(30, 30, 30, 0.95) inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Force remove any popup/dropdown styling */
+input::-moz-focus-inner {
+    border: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+/* Hide Edge password reveal button */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* Additional fix for form floating labels */
+.form-floating {
+    position: relative !important;
+    background: transparent !important;
+}
+
+.form-floating > label {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100% !important;
+    padding: 1rem 0.75rem !important;
+    pointer-events: none !important;
+    border: 1px solid transparent !important;
+    transform-origin: 0 0 !important;
+    transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    background: transparent !important;
+    z-index: 10 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    opacity: 0.65 !important;
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    background: transparent !important;
+    padding: 0 0.25rem !important;
+    z-index: 10 !important;
+}
+
+/* Ensure input field is properly styled */
+.form-floating > .form-control {
+    padding: 1rem 0.75rem !important;
+    height: calc(3.5rem + 2px) !important;
+    line-height: 1.25 !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+.form-floating > .form-control::placeholder {
+    color: transparent !important;
+    opacity: 0 !important;
+}
+
+/* Additional protection against white overlays */
+body::before,
+body::after,
+html::before,
+html::after,
+.container::before,
+.container::after,
+.form-floating::before,
+.form-floating::after {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Kill any possible autocomplete styling */
+input[autocomplete],
+input[autocomplete="username"],
+input[autocomplete="current-password"],
+input[autocomplete="new-password"],
+input[autocomplete="email"] {
+    background: rgba(255, 255, 255, 0.08) !important;
+    -webkit-box-shadow: 0 0 0 1000px rgba(30, 30, 30, 0.95) inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    color: #ffffff !important;
+}
+
+/* Disable ALL focus behaviors that might create white areas */
+*:focus,
+*:active,
+*:hover,
+*:target,
+*:visited {
+    outline: none !important;
+    background-color: inherit !important;
+}
+
+/* Force dark backgrounds for ALL possible input states */
+input:focus-visible,
+input:focus-within,
+input:focus,
+.form-control:focus-visible,
+.form-control:focus-within,
+.form-control:focus,
+.cool-input:focus-visible,
+.cool-input:focus-within,
+.cool-input:focus {
+    outline: none !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: #ffffff !important;
+    border-color: rgba(13, 110, 253, 0.8) !important;
+    -webkit-box-shadow: 0 0 0 1000px rgba(30, 30, 30, 0.95) inset !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/* Additional aggressive autofill override with animation */
+@@-webkit-keyframes autofill-aggressive {
+    to {
+        color: #ffffff !important;
+        background: rgba(30, 30, 30, 0.95) !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+}
+
+input:-webkit-autofill {
+    -webkit-animation-name: autofill-aggressive !important;
+    -webkit-animation-fill-mode: both !important;
+    -webkit-animation-duration: 0.1s !important;
+}
+
+/* GLOBAL override for any remaining white backgrounds */
+* {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+}
+
+/* Hide dropdown arrows and any browser UI */
+datalist {
+    display: none !important;
+}
+
+/* Override browser's default selection styling */
+::selection {
+    background: rgba(13, 110, 253, 0.3) !important;
+    color: #ffffff !important;
+}
+
+::-moz-selection {
+    background: rgba(13, 110, 253, 0.3) !important;
+    color: #ffffff !important;
+}
+
+/* FINAL ULTIMATE FIX - Target the specific white rectangle issue */
+.form-floating {
+    position: relative !important;
+    background: transparent !important;
+    overflow: hidden !important;
+}
+
+.form-floating::before,
+.form-floating::after,
+.form-floating > *::before,
+.form-floating > *::after {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    content: none !important;
+}
+
+/* Fix floating labels - IMPROVED VERSION */
+.form-floating > label {
+    color: rgba(255, 255, 255, 0.7) !important;
+    background: transparent !important;
+    padding: 0 0.5rem !important;
+    margin: 0 !important;
+    left: 0.75rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    transition: all 0.3s ease !important;
+    pointer-events: none !important;
+    z-index: 10 !important;
+    position: absolute !important;
+    font-size: 1rem !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > input:focus ~ label,
+.form-floating > input:not(:placeholder-shown) ~ label {
+    color: rgba(255, 255, 255, 0.9) !important;
+    background: transparent !important;
+    transform: scale(.75) translateY(-2.2rem) translateX(-0.1rem) !important;
+    padding: 0 0.5rem !important;
+    margin: 0 !important;
+    z-index: 10 !important;
+    left: 0.75rem !important;
+    font-size: 0.875rem !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Force labels to always be visible */
+.form-floating label {
+    color: rgba(255, 255, 255, 0.7) !important;
+    background: transparent !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 0.75rem !important;
+    transform: translateY(-50%) !important;
+    z-index: 10 !important;
+    padding: 0 0.5rem !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
+    pointer-events: none !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    white-space: nowrap !important;
+}
+
+/* Remove any white backgrounds from containers */
+.form-floating {
+    background: transparent !important;
+    position: relative !important;
+    margin-bottom: 1rem !important;
+}
+
+.form-floating > .form-control,
+.form-floating > input {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    padding: 1.2rem 0.75rem 0.4rem 0.75rem !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+    height: calc(3.5rem + 2px) !important;
+    min-height: calc(3.5rem + 2px) !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.form-floating > .form-control:focus,
+.form-floating > input:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(13, 110, 253, 0.8) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    padding: 1.2rem 0.75rem 0.4rem 0.75rem !important;
+}
+
+/* COMPLETELY HIDE placeholder text when using floating labels */
+.form-floating > .form-control::placeholder,
+.form-floating > input::placeholder {
+    color: transparent !important;
+    opacity: 0 !important;
+}
+
+.form-floating > .form-control:focus::placeholder,
+.form-floating > input:focus::placeholder {
+    color: transparent !important;
+    opacity: 0 !important;
+}
+
+/* Ensure no placeholder text shows at all */
+.form-floating input[placeholder],
+.form-floating .form-control[placeholder] {
+    text-indent: 0 !important;
+}
+
+.form-floating input:focus[placeholder],
+.form-floating .form-control:focus[placeholder] {
+    text-indent: 0 !important;
+}
+
+/* Override any Bootstrap defaults */
+.form-control:disabled,
+.form-control[readonly] {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Fix dropdown arrow and selection styling */
+input[list]::-webkit-calendar-picker-indicator {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-radius: 4px !important;
+}
+
+/* Style the datalist options */
+datalist {
+    background: rgba(40, 40, 40, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 8px !important;
+}
+
+/* Custom scrollbar for dropdowns */
+::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(40, 40, 40, 0.8) !important;
+    border-radius: 4px !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-radius: 4px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5) !important;
 }
 
 /* Animated button */
@@ -159,7 +696,7 @@ html, body {
 /* Critical CSS to ensure ethereal background shows */
 body {
     background: transparent !important;
-    min-height: 100vh !important;
+    height: 100vh !important;
 }
 
 .ethereal-shadows-background {
@@ -253,16 +790,6 @@ body {
     color: rgba(255, 255, 255, 0.6) !important;
 }
 
-.form-floating > label {
-    color: rgba(255, 255, 255, 0.8) !important;
-}
-
-.form-floating > .form-control:focus ~ label,
-.form-floating > .form-control:not(:placeholder-shown) ~ label {
-    color: rgba(255, 255, 255, 0.9) !important;
-    transform: scale(.85) translateY(-0.5rem) translateX(0.15rem) !important;
-}
-
 .text-danger {
     color: #ff6b6b !important;
     font-size: 0.875rem !important;
@@ -318,6 +845,295 @@ body {
         text-shadow: 0 0 40px rgba(255, 255, 255, 1), 0 0 80px rgba(255, 255, 255, 0.6);
     }
 }
+
+/* ULTIMATE NUCLEAR OPTION - Kill every possible browser UI element */
+input::-webkit-list-button,
+input::-webkit-calendar-picker-indicator,
+input::-webkit-clear-button,
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button,
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-strong-password-auto-fill-button,
+input::-webkit-search-decoration,
+input::-webkit-search-cancel-button,
+input::-webkit-search-results-button,
+input::-webkit-search-results-decoration,
+input::-webkit-textfield-decoration-container,
+input::-webkit-validation-bubble,
+input::-webkit-validation-bubble-message,
+input::-webkit-validation-bubble-arrow,
+input::-webkit-validation-bubble-top-outer-arrow,
+input::-webkit-validation-bubble-top-inner-arrow,
+input::-webkit-caps-lock-indicator,
+input::-webkit-progress-bar,
+input::-webkit-progress-value,
+input::-webkit-slider-thumb,
+input::-webkit-slider-runnable-track,
+input::-webkit-media-controls,
+input::-webkit-media-controls-panel,
+input::-webkit-media-controls-play-button,
+input::-webkit-file-upload-button,
+input::-ms-clear,
+input::-ms-reveal,
+input::-ms-browse,
+input::-ms-check,
+input::-ms-expand,
+input::-ms-fill,
+input::-ms-fill-lower,
+input::-ms-fill-upper,
+input::-ms-thumb,
+input::-ms-ticks-after,
+input::-ms-ticks-before,
+input::-ms-tooltip,
+input::-ms-track,
+input::-ms-value,
+input::-moz-focus-inner,
+input::-moz-focus-outer,
+input::-moz-list-bullet,
+input::-moz-meter-bar,
+input::-moz-progress-bar,
+input::-moz-range-progress,
+input::-moz-range-thumb,
+input::-moz-range-track,
+select::-webkit-scrollbar,
+select::-webkit-scrollbar-button,
+select::-webkit-scrollbar-track,
+select::-webkit-scrollbar-track-piece,
+select::-webkit-scrollbar-thumb,
+select::-webkit-scrollbar-corner,
+select::-webkit-resizer,
+select::-ms-expand {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    position: absolute !important;
+    left: -99999px !important;
+    top: -99999px !important;
+    z-index: -999999 !important;
+    content: "" !important;
+    outline: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    transform: scale(0) !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    -webkit-clip-path: inset(100%) !important;
+    clip-path: inset(100%) !important;
+}
+
+/* MEGA NUCLEAR - Override every possible autofill state */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+input:-webkit-autofill-selected,
+input:-webkit-autofill-strong-password,
+input:-webkit-autofill-strong-password-viewable,
+input:-webkit-autofill-and-obscured,
+input:-internal-autofill-selected,
+input:-internal-autofill-previewed,
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus,
+.form-control:-webkit-autofill:active,
+.cool-input:-webkit-autofill,
+.cool-input:-webkit-autofill:hover,
+.cool-input:-webkit-autofill:focus,
+.cool-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 9999px rgba(30, 30, 30, 1) inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background-color: rgba(30, 30, 30, 1) !important;
+    background-image: none !important;
+    background-clip: padding-box !important;
+    background-origin: padding-box !important;
+    background-size: auto !important;
+    background-repeat: no-repeat !important;
+    background-attachment: scroll !important;
+    background-position: 0% 0% !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    transition: background-color 50000s ease-in-out 0s, color 50000s ease-in-out 0s !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    outline: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+/* DISABLE every possible browser dropdown and suggestion */
+datalist,
+datalist option,
+option,
+optgroup {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    background: transparent !important;
+    color: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    position: absolute !important;
+    left: -99999px !important;
+    top: -99999px !important;
+    z-index: -999999 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    -webkit-clip-path: inset(100%) !important;
+    clip-path: inset(100%) !important;
+}
+
+/* EXTREME - Force all inputs to have consistent styling */
+input,
+.form-control,
+.cool-input,
+input[type="email"],
+input[type="password"],
+input[type="text"],
+input[type="search"],
+input[type="url"],
+input[type="tel"] {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    outline: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    border-radius: 6px !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    padding: 1rem 0.75rem !important;
+    margin: 0 !important;
+    vertical-align: baseline !important;
+    text-align: start !important;
+    text-indent: 0 !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    text-transform: none !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    background-clip: padding-box !important;
+    background-origin: padding-box !important;
+    background-size: auto !important;
+    background-repeat: no-repeat !important;
+    background-attachment: scroll !important;
+    background-position: 0% 0% !important;
+    background-image: none !important;
+    box-sizing: border-box !important;
+    autocomplete: off !important;
+    -webkit-autocomplete: off !important;
+}
+
+/* FORCE consistent focus styling */
+input:focus,
+input:focus-visible,
+input:focus-within,
+.form-control:focus,
+.form-control:focus-visible,
+.form-control:focus-within,
+.cool-input:focus,
+.cool-input:focus-visible,
+.cool-input:focus-within {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(13, 110, 253, 0.8) !important;
+    color: #ffffff !important;
+    outline: none !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    text-shadow: none !important;
+    transform: translateY(-2px) !important;
+    -webkit-box-shadow: 0 0 0 9999px rgba(30, 30, 30, 1) inset, 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background-image: none !important;
+    background-clip: padding-box !important;
+    background-origin: padding-box !important;
+    background-size: auto !important;
+    background-repeat: no-repeat !important;
+    background-attachment: scroll !important;
+    background-position: 0% 0% !important;
+}
+
+/* Disable ALL focus behaviors that might create white areas */
+*:focus,
+*:active,
+*:hover,
+*:target,
+*:visited {
+    outline: none !important;
+    background-color: inherit !important;
+}
+
+/* Cool checkbox styling for consistency */
+.cool-checkbox {
+    transition: all 0.3s ease !important;
+    margin-right: 0.75rem !important;
+    transform: scale(1.1) !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+}
+
+.cool-checkbox:checked {
+    background: linear-gradient(135deg, #0d6efd, #6610f2) !important;
+    box-shadow: 0 0 20px rgba(13, 110, 253, 0.5) !important;
+    border-color: #0d6efd !important;
+}
+
+.cool-checkbox:hover {
+    transform: scale(1.15) !important;
+    box-shadow: 0 0 15px rgba(13, 110, 253, 0.3) !important;
+}
+
+/* Improve form-check styling */
+.form-check {
+    display: flex !important;
+    align-items: center !important;
+    padding-left: 0 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.form-check-input {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    margin-right: 0.75rem !important;
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    width: 1.2em !important;
+    height: 1.2em !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+}
+
+.form-check-input:checked {
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 10px rgba(13, 110, 253, 0.4) !important;
+}
+
+.form-check-input:hover {
+    border-color: rgba(13, 110, 253, 0.6) !important;
+    box-shadow: 0 0 8px rgba(13, 110, 253, 0.2) !important;
+}
+
+.form-check-label {
+    cursor: pointer !important;
+    margin-left: 0.25rem !important;
+    user-select: none !important;
+    line-height: 1.4 !important;
+}
 </style>
 </head>
 <body>
@@ -339,23 +1155,47 @@ body {
                     <p class="text-light" style="color: rgba(255, 255, 255, 0.9) !important; text-shadow: 0 0 10px rgba(255, 255, 255, 0.3) !important;">Create a new account.</p>
                 </div>
 
-                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" autocomplete="off">
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
                     <div class="form-floating mb-3">
-                        <input asp-for="Input.Email" class="form-control cool-input" autocomplete="username" aria-required="true" placeholder="name@example.com" style="background: rgba(255, 255, 255, 0.08) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; color: #ffffff !important; backdrop-filter: blur(10px) !important; transition: all 0.3s ease !important;" />
+                        <input asp-for="Input.Email" 
+                               class="form-control cool-input" 
+                               autocomplete="new-email" 
+                               autocapitalize="off" 
+                               autocorrect="off" 
+                               spellcheck="false"
+                               aria-required="true" 
+                               placeholder="name@example.com" 
+                               style="background: rgba(255, 255, 255, 0.08) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; color: #ffffff !important; backdrop-filter: blur(10px) !important; transition: all 0.3s ease !important;" />
                         <label asp-for="Input.Email" class="text-muted" style="color: rgba(255, 255, 255, 0.7) !important; transition: all 0.3s ease !important;">Email</label>
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input asp-for="Input.Password" class="form-control cool-input" autocomplete="new-password" aria-required="true" placeholder="password" style="background: rgba(255, 255, 255, 0.08) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; color: #ffffff !important; backdrop-filter: blur(10px) !important; transition: all 0.3s ease !important;" />
+                        <input asp-for="Input.Password" 
+                               class="form-control cool-input" 
+                               autocomplete="new-password" 
+                               autocapitalize="off" 
+                               autocorrect="off" 
+                               spellcheck="false"
+                               aria-required="true" 
+                               placeholder="password" 
+                               style="background: rgba(255, 255, 255, 0.08) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; color: #ffffff !important; backdrop-filter: blur(10px) !important; transition: all 0.3s ease !important;" />
                         <label asp-for="Input.Password" class="text-muted" style="color: rgba(255, 255, 255, 0.7) !important; transition: all 0.3s ease !important;">Password</label>
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
 
                     <div class="form-floating mb-4">
-                        <input asp-for="Input.ConfirmPassword" class="form-control cool-input" autocomplete="new-password" aria-required="true" placeholder="password" style="background: rgba(255, 255, 255, 0.08) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; color: #ffffff !important; backdrop-filter: blur(10px) !important; transition: all 0.3s ease !important;" />
+                        <input asp-for="Input.ConfirmPassword" 
+                               class="form-control cool-input" 
+                               autocomplete="new-password" 
+                               autocapitalize="off" 
+                               autocorrect="off" 
+                               spellcheck="false"
+                               aria-required="true" 
+                               placeholder="password" 
+                               style="background: rgba(255, 255, 255, 0.08) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; color: #ffffff !important; backdrop-filter: blur(10px) !important; transition: all 0.3s ease !important;" />
                         <label asp-for="Input.ConfirmPassword" class="text-muted" style="color: rgba(255, 255, 255, 0.7) !important; transition: all 0.3s ease !important;">Confirm Password</label>
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>
@@ -496,6 +1336,57 @@ body {
                 
                 animateEtherealEffect();
             }
+
+            // ULTIMATE FIX for white rectangle - Remove browser autofill programmatically
+            function destroyAutofill() {
+                // Get all input elements
+                const inputs = document.querySelectorAll('input[type="email"], input[type="password"], input[type="text"]');
+                
+                inputs.forEach(input => {
+                    // Use specific autocomplete values instead of "off"
+                    if (input.type === 'email') {
+                        input.setAttribute('autocomplete', 'new-email');
+                    } else if (input.type === 'password') {
+                        input.setAttribute('autocomplete', 'new-password');
+                    }
+                    
+                    // Remove any datalist connections
+                    input.removeAttribute('list');
+                    
+                    // Force clear any autofill background
+                    input.style.background = 'rgba(255, 255, 255, 0.08) !important';
+                    input.style.webkitBoxShadow = '0 0 0 9999px rgba(30, 30, 30, 1) inset !important';
+                    input.style.webkitTextFillColor = '#ffffff !important';
+                    
+                    // Add event listeners to prevent autofill
+                    input.addEventListener('input', function() {
+                        // Force styling even after autofill
+                        setTimeout(() => {
+                            this.style.background = 'rgba(255, 255, 255, 0.08) !important';
+                            this.style.webkitBoxShadow = '0 0 0 9999px rgba(30, 30, 30, 1) inset !important';
+                            this.style.webkitTextFillColor = '#ffffff !important';
+                        }, 10);
+                    });
+                    
+                    input.addEventListener('focus', function() {
+                        this.style.background = 'rgba(255, 255, 255, 0.12) !important';
+                        this.style.webkitBoxShadow = '0 0 0 9999px rgba(30, 30, 30, 1) inset !important';
+                        this.style.webkitTextFillColor = '#ffffff !important';
+                    });
+                });
+                
+                // Remove any existing datalist elements
+                const datalists = document.querySelectorAll('datalist');
+                datalists.forEach(datalist => {
+                    datalist.parentNode.removeChild(datalist);
+                });
+            }
+            
+            // Run immediately and after a short delay
+            destroyAutofill();
+            setTimeout(destroyAutofill, 100);
+            setTimeout(destroyAutofill, 500);
+            setTimeout(destroyAutofill, 1000);
         });
     </script>
 </body>
