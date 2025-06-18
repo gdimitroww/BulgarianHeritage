@@ -1,0 +1,646 @@
+@model PointOfInterest
+@{
+    ViewData["Title"] = Model.Name;
+    
+    string GetCategoryIcon(POICategory category)
+    {
+        return category switch
+        {
+            POICategory.Church => "fa-church",
+            POICategory.Monastery => "fa-place-of-worship",
+            POICategory.Fortress => "fa-chess-rook",
+            POICategory.Archaeological => "fa-landmark",
+            POICategory.Nature => "fa-tree",
+            POICategory.HistoricalTown => "fa-city",
+            POICategory.Monument => "fa-monument",
+            POICategory.Architecture => "fa-building-columns",
+            POICategory.Museum => "fa-building",
+            POICategory.Cultural => "fa-masks-theater",
+            _ => "fa-map-marker-alt"
+        };
+    }
+}
+
+<!-- Ethereal Shadows Background -->
+<div class="ethereal-shadows-background">
+    <div class="shadow-overlay">
+        <svg class="filter-svg">
+            <defs>
+                <filter id="ethereal-filter">
+                    <feTurbulence
+                        id="turbulence"
+                        result="undulation"
+                        numOctaves="2"
+                        baseFrequency="0.0003,0.003"
+                        seed="0"
+                        type="turbulence"
+                    />
+                    <feColorMatrix
+                        id="hue-rotate"
+                        in="undulation"
+                        type="hueRotate"
+                        values="180"
+                    />
+                    <feColorMatrix
+                        in="dist"
+                        result="circulation"
+                        type="matrix"
+                        values="4 0 0 0 1  4 0 0 0 1  4 0 0 0 1  1 0 0 0 0"
+                    />
+                    <feDisplacementMap
+                        in="SourceGraphic"
+                        in2="circulation"
+                        scale="80"
+                        result="dist"
+                    />
+                    <feDisplacementMap
+                        in="dist"
+                        in2="undulation"
+                        scale="80"
+                        result="output"
+                    />
+                </filter>
+            </defs>
+        </svg>
+        <div class="shadow-mask"></div>
+    </div>
+    <div class="noise-overlay"></div>
+</div>
+
+<!-- Hero Section -->
+<section class="details-hero-section text-white py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center min-vh-60">
+            <div class="col-lg-8">
+                <div class="content-overlay">
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb" class="mb-3">
+                        <ol class="breadcrumb bg-transparent p-0">
+                            <li class="breadcrumb-item"><a href="/" class="text-white-50"><i class="fas fa-home me-1"></i>Home</a></li>
+                            <li class="breadcrumb-item"><a asp-controller="POI" asp-action="Index" class="text-white-50">Heritage Sites</a></li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">@Model.Name</li>
+                        </ol>
+                    </nav>
+                    
+                    <h1 class="display-4 fw-bold mb-3 ethereal-title">@Model.Name</h1>
+                    <h2 class="h4 text-warning mb-4">@Model.NameBulgarian</h2>
+                    
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        <span class="heritage-badge heritage-badge-primary">
+                            <i class="fas @GetCategoryIcon(Model.Category) me-2"></i>@Model.Category
+                        </span>
+                        @if (Model.IsUNESCOSite)
+                        {
+                            <span class="heritage-badge heritage-badge-unesco">
+                                <i class="fas fa-star me-2"></i>UNESCO Site
+                            </span>
+                        }
+                        @if (Model.HasVirtualTour)
+                        {
+                            <span class="heritage-badge heritage-badge-virtual">
+                                <i class="fas fa-vr-cardboard me-2"></i>Virtual Tour
+                            </span>
+                        }
+                    </div>
+                    
+                    <div class="d-flex flex-wrap gap-3 mb-4">
+                        @if (Model.HasVirtualTour)
+                        {
+                            <button class="btn btn-heritage-primary btn-lg" id="virtualTourBtn">
+                                <i class="fas fa-vr-cardboard me-2"></i>Start Virtual Tour
+                            </button>
+                        }
+                        <button class="btn btn-outline-light btn-lg" id="showMapBtn">
+                            <i class="fas fa-map-marker-alt me-2"></i>Show Location
+                        </button>
+                        <button class="btn btn-outline-light btn-lg" id="shareBtn">
+                            <i class="fas fa-share-alt me-2"></i>Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="heritage-image-showcase">
+                    @if (!string.IsNullOrEmpty(Model.MainImageUrl))
+                    {
+                        <img src="@Model.MainImageUrl" alt="@Model.Name" class="heritage-main-image" 
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="heritage-image-placeholder" style="display: none;" data-category="@Model.Category">
+                            <div class="heritage-placeholder-content">
+                                <i class="fas @GetCategoryIcon(Model.Category) fa-4x mb-3"></i>
+                                <h5 class="text-white">@Model.Name</h5>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="heritage-image-placeholder" data-category="@Model.Category">
+                            <div class="heritage-placeholder-content">
+                                <i class="fas @GetCategoryIcon(Model.Category) fa-4x mb-3"></i>
+                                <h5 class="text-white">@Model.Name</h5>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Description Section -->
+            <div class="col-lg-8 mb-4">
+                <div class="heritage-content-card">
+                    <h3 class="heritage-section-title">
+                        <i class="fas fa-info-circle me-2"></i>About This Heritage Site
+                    </h3>
+                    <p class="heritage-description">@Model.Description</p>
+                    @if (!string.IsNullOrEmpty(Model.DescriptionBulgarian) && Model.DescriptionBulgarian != Model.Description)
+                    {
+                        <div class="heritage-bulgarian-section">
+                            <h6 class="text-muted mb-2"><i class="fas fa-globe me-1"></i>In Bulgarian:</h6>
+                            <p class="mb-0">@Model.DescriptionBulgarian</p>
+                        </div>
+                    }
+                </div>
+                
+                <!-- Gallery Section -->
+                @if (Model.Images != null && Model.Images.Any())
+                {
+                    <div class="heritage-content-card">
+                        <h3 class="heritage-section-title">
+                            <i class="fas fa-images me-2"></i>Photo Gallery
+                        </h3>
+                        <div class="row g-3">
+                            @foreach (var image in Model.Images.Take(6))
+                            {
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="heritage-gallery-item" onclick="openImageModal('@image.ImageUrl', '@image.Caption')">
+                                        <img src="@image.ImageUrl" alt="@image.Caption" class="heritage-gallery-image">
+                                        <div class="heritage-gallery-overlay">
+                                            <i class="fas fa-search-plus fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(image.Caption))
+                                    {
+                                        <small class="text-muted d-block mt-2">@image.Caption</small>
+                                    }
+                                </div>
+                            }
+                        </div>
+                        @if (Model.Images.Count > 6)
+                        {
+                            <div class="text-center mt-4">
+                                <button class="btn btn-outline-light" id="loadMoreImages">
+                                    <i class="fas fa-plus me-2"></i>View More Images (@(Model.Images.Count - 6) remaining)
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+                
+                <!-- User Contributions Section -->
+                @if (Model.UserContributions != null && Model.UserContributions.Any())
+                {
+                    <div class="heritage-content-card">
+                        <h3 class="heritage-section-title">
+                            <i class="fas fa-users me-2"></i>Visitor Stories
+                        </h3>
+                        @foreach (var contribution in Model.UserContributions.Take(3))
+                        {
+                            <div class="heritage-contribution">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="heritage-avatar">
+                                        @contribution.User?.UserName?.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 text-white">@contribution.User?.UserName</h6>
+                                        <small class="text-muted">@contribution.SubmittedAt.ToString("MMM dd, yyyy")</small>
+                                    </div>
+                                </div>
+                                <p class="text-light mb-0">@contribution.Content</p>
+                            </div>
+                        }
+                        @if (Model.UserContributions.Count > 3)
+                        {
+                            <div class="text-center mt-3">
+                                <button class="btn btn-outline-light" id="loadMoreContributions">
+                                    <i class="fas fa-comments me-2"></i>View All Stories (@Model.UserContributions.Count)
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="heritage-sidebar-card">
+                    <h5 class="heritage-section-title">
+                        <i class="fas fa-info me-2"></i>Quick Information
+                    </h5>
+                    
+                    <div class="heritage-info-list">
+                        <div class="heritage-info-item">
+                            <span class="heritage-info-label"><i class="fas fa-tag me-2"></i>Category</span>
+                            <span class="heritage-info-value">@Model.Category</span>
+                        </div>
+                        
+                        @if (Model.IsUNESCOSite)
+                        {
+                            <div class="heritage-info-item">
+                                <span class="heritage-info-label"><i class="fas fa-star me-2"></i>UNESCO Status</span>
+                                <span class="heritage-badge heritage-badge-unesco">UNESCO Site</span>
+                            </div>
+                        }
+                        
+                        @if (Model.HasVirtualTour)
+                        {
+                            <div class="heritage-info-item">
+                                <span class="heritage-info-label"><i class="fas fa-vr-cardboard me-2"></i>Virtual Tour</span>
+                                <span class="heritage-badge heritage-badge-virtual">Available</span>
+                            </div>
+                        }
+                        
+                        <div class="heritage-info-item">
+                            <span class="heritage-info-label"><i class="fas fa-calendar-plus me-2"></i>Added</span>
+                            <span class="heritage-info-value">@Model.CreatedAt.ToString("MMM dd, yyyy")</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Location Map -->
+                    <div class="heritage-map-section">
+                        <h6 class="heritage-section-title"><i class="fas fa-map-marker-alt me-2"></i>Location</h6>
+                        <div id="detailMap" class="heritage-map"></div>
+                        <div class="heritage-coordinates">
+                            <small class="text-muted">
+                                <i class="fas fa-crosshairs me-1"></i>
+                                @Model.Latitude.ToString("F6"), @Model.Longitude.ToString("F6")
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="heritage-actions">
+                        <button class="btn btn-heritage-primary w-100 mb-2" id="getDirectionsBtn">
+                            <i class="fas fa-route me-2"></i>Get Directions
+                        </button>
+                        <button class="btn btn-outline-light w-100" id="addToItineraryBtn">
+                            <i class="fas fa-bookmark me-2"></i>Add to Itinerary
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content heritage-modal">
+            <div class="modal-header">
+                <h5 class="modal-title text-white" id="imageModalLabel">Gallery Image</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <img id="modalImage" src="" alt="" class="img-fluid w-100">
+            </div>
+            <div class="modal-footer">
+                <p id="modalCaption" class="text-white mb-0"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Initialize map
+        let map;
+        let marker;
+        
+        $(document).ready(function() {
+            initializeMap();
+            initializeInteractivity();
+        });
+        
+        function initializeMap() {
+            map = L.map('detailMap', {
+                zoomControl: true,
+                scrollWheelZoom: false
+            }).setView([@Model.Latitude, @Model.Longitude], 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            // Add marker
+            marker = L.marker([@Model.Latitude, @Model.Longitude])
+                .addTo(map)
+                .bindPopup(`
+                    <div class="text-center">
+                        <h6 class="mb-2">@Model.Name</h6>
+                        <p class="mb-2 small">@Model.NameBulgarian</p>
+                        <span class="badge bg-primary">@Model.Category</span>
+                    </div>
+                `);
+        }
+        
+        function initializeInteractivity() {
+            // Virtual Tour
+            $('#virtualTourBtn').click(function() {
+                @if (!string.IsNullOrEmpty(Model.VideoUrl))
+                {
+                    <text>
+                    window.open('@Model.VideoUrl', '_blank');
+                    </text>
+                }
+                else
+                {
+                    <text>
+                    alert('Virtual tour is coming soon!');
+                    </text>
+                }
+            });
+            
+            // Show on Map
+            $('#showMapBtn').click(function() {
+                marker.openPopup();
+                $('#detailMap')[0].scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Share functionality
+            $('#shareBtn').click(function() {
+                if (navigator.share) {
+                    navigator.share({
+                        title: '@Model.Name',
+                        text: '@Model.Description.Substring(0, Math.Min(100, Model.Description.Length))...',
+                        url: window.location.href
+                    });
+                } else {
+                    // Fallback - copy to clipboard
+                    navigator.clipboard.writeText(window.location.href);
+                    alert('Link copied to clipboard!');
+                }
+            });
+            
+            // Get Directions
+            $('#getDirectionsBtn').click(function() {
+                const url = `https://www.google.com/maps/dir/?api=1&destination=@Model.Latitude,@Model.Longitude`;
+                window.open(url, '_blank');
+            });
+            
+            // Add to Itinerary (placeholder)
+            $('#addToItineraryBtn').click(function() {
+                alert('Itinerary feature coming soon!');
+            });
+        }
+        
+        function openImageModal(imageUrl, caption) {
+            $('#modalImage').attr('src', imageUrl);
+            $('#modalImage').attr('alt', caption);
+            $('#modalCaption').text(caption);
+            $('#imageModal').modal('show');
+        }
+    </script>
+    
+    <style>
+        /* Details Page Specific Styling */
+        .details-hero-section {
+            background: transparent;
+            position: relative;
+            min-height: 70vh;
+        }
+
+        .min-vh-60 {
+            min-height: 60vh;
+        }
+
+        .heritage-main-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .heritage-image-showcase {
+            position: relative;
+        }
+
+        .heritage-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .heritage-badge-primary {
+            background: rgba(13, 110, 253, 0.3);
+            color: #ffffff;
+        }
+
+        .heritage-badge-unesco {
+            background: rgba(255, 193, 7, 0.3);
+            color: #fff3cd;
+        }
+
+        .heritage-badge-virtual {
+            background: rgba(25, 135, 84, 0.3);
+            color: #d1e7dd;
+        }
+
+        .btn-heritage-primary {
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            border: none;
+            color: white;
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-heritage-primary:hover {
+            background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+            box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .heritage-content-card {
+            background: rgba(40, 40, 40, 0.8);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .heritage-sidebar-card {
+            background: rgba(40, 40, 40, 0.8);
+            padding: 1.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 20px;
+        }
+
+        .heritage-section-title {
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .heritage-description {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .heritage-bulgarian-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 4px solid #0d6efd;
+        }
+
+        .heritage-gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .heritage-gallery-item:hover {
+            transform: scale(1.03);
+        }
+
+        .heritage-gallery-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .heritage-gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: white;
+        }
+
+        .heritage-gallery-item:hover .heritage-gallery-overlay {
+            opacity: 1;
+        }
+
+        .heritage-contribution {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 3px solid #0d6efd;
+        }
+
+        .heritage-avatar {
+            width: 40px;
+            height: 40px;
+            background: #0d6efd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 0.75rem;
+        }
+
+        .heritage-info-list {
+            margin-bottom: 1.5rem;
+        }
+
+        .heritage-info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .heritage-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .heritage-info-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .heritage-info-value {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .heritage-map-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .heritage-map {
+            height: 200px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 0.5rem;
+        }
+
+        .heritage-coordinates {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .heritage-actions {
+            margin-top: 1rem;
+        }
+
+        .heritage-modal .modal-content {
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+        }
+
+        .heritage-modal .modal-header,
+        .heritage-modal .modal-footer {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .content-overlay {
+                padding: 1.5rem;
+            }
+            
+            .heritage-content-card,
+            .heritage-sidebar-card {
+                padding: 1.5rem;
+            }
+            
+            .heritage-main-image {
+                height: 250px;
+            }
+        }
+    </style>
+} 

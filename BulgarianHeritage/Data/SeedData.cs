@@ -134,7 +134,7 @@ namespace BulgarianHeritage.Data
                     Latitude = 41.9333,
                     Longitude = 24.8667,
                     Category = POICategory.Monastery,
-                    MainImageUrl = "/images/bachkovo-monastery.jpg",
+                    MainImageUrl = "/images/bachkovo.jpg",
                     IsUNESCOSite = false,
                     HasVirtualTour = true,
                     CreatedAt = DateTime.UtcNow,

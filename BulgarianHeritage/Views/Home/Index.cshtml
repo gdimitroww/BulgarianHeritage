@@ -166,10 +166,11 @@
                 {
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="card h-100 shadow-sm border-0 heritage-card" data-category="@poi.Category">
-                            @if (!string.IsNullOrEmpty(poi.MainImageUrl))
+                            @if (!string.IsNullOrEmpty(poi.MainImageUrl) || poi.Name == "Bachkovo Monastery")
                             {
-                                <img src="@poi.MainImageUrl" class="card-img-top heritage-image" alt="@poi.Name" style="height: 250px; object-fit: cover;" 
-                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <img src="@(poi.Name == "Bachkovo Monastery" ? "/images/bachkovo-new.jpg" : poi.MainImageUrl)" class="card-img-top heritage-image" alt="@poi.Name" style="height: 250px; object-fit: cover;" 
+                                     onerror="console.log('Image failed to load: ' + this.src + ' for @poi.Name'); this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                     onload="console.log('Image loaded successfully: ' + this.src + ' for @poi.Name');">
                                 <div class="heritage-image-placeholder" style="display: none; height: 250px;" data-category="@poi.Category">
                                     <div class="heritage-placeholder-content">
                                         <i class="fas @(GetCategoryIcon(poi.Category)) fa-3x mb-3"></i>
